@@ -1,8 +1,8 @@
-const CACHE_NAME = 'fosiles-pra-v1';
+const CACHE_NAME = 'fosiles-pra-v2';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
-    './styles.css',
+    './styles-v2.css',
     './app.js',
     './catalogo_fosiles.json',
     './favicon.ico'
