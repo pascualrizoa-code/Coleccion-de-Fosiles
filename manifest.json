@@ -1,0 +1,17 @@
+{
+    "name": "Colección de Fósiles - Pascual Rizo",
+    "short_name": "Fósiles PRA",
+    "description": "Explora la historia de la vida en la Tierra a través de una colección privada de fósiles.",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#faf9f6",
+    "theme_color": "#1a2f1a",
+    "orientation": "any",
+    "icons": [
+        {
+            "src": "favicon.ico",
+            "sizes": "64x64 32x32 24x24 16x16",
+            "type": "image/x-icon"
+        }
+    ]
+}

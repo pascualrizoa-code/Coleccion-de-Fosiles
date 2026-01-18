@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description"
+        content="Colección de Fósiles - Explora la historia de la vida en la Tierra a través de fósiles de diferentes eras geológicas">
+    <meta name="author" content="Pascual Rizo">
+    <meta name="keywords" content="fósiles, paleontología, geología, colección, museo">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Colección de Fósiles - Pascual Rizo">
+    <meta property="og:description" content="Explora la historia de la vida en la Tierra">
+    <meta property="og:type" content="website">
+
+    <title>Colección de Fósiles - Pascual Rizo</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a2f1a">
+    <link rel="apple-touch-icon" href="favicon.ico">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <!-- Left Section: Title, Subtitle, Stats -->
+            <div class="header-left">
+                <h1 class="main-title">Colección de <span class="title-accent">Fósiles</span></h1>
+                <p class="owner-name">Propiedad de Pascual Rizo - <span id="header-year"></span></p>
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="total-count">0</span>
+                        <span class="stat-label">Especímenes</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="era-count">0</span>
+                        <span class="stat-label">Periodos</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Section: Slogan -->
+            <div class="header-center">
+                <p class="slogan">EXPLORA LA HISTORIA DE LA VIDA EN LA TIERRA</p>
+            </div>
+            <!-- Right Section: Controls -->
+            <div class="header-right">
+                <button class="exhibition-btn" id="exhibition-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+                        <polyline points="17 2 12 7 7 2"></polyline>
+                    </svg>
+                    Modo Exposición
+                </button>
+                <div class="search-container">
+                    <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="search-input" class="search-input" placeholder="Buscar fósiles...">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar with Filters -->
+        <aside class="sidebar" id="sidebar">
+            <h3 class="sidebar-title">Filtros</h3>
+
+            <!-- Filter by Period -->
+            <div class="filter-group">
+                <button class="filter-header" id="filter-periodo-header">
+                    <span>Periodo</span>
+                    <svg class="filter-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="filter-options" id="filter-periodo-options">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- Filter by Type/Denomination -->
+            <div class="filter-group">
+                <button class="filter-header" id="filter-tipo-header">
+                    <span>Tipo</span>
+                    <svg class="filter-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="filter-options" id="filter-tipo-options">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- Filter by Country -->
+            <div class="filter-group">
+                <button class="filter-header" id="filter-pais-header">
+                    <span>País</span>
+                    <svg class="filter-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="filter-options" id="filter-pais-options">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- Filter Count -->
+            <div class="filter-count" id="filter-count">
+                Mostrando <strong id="shown-count">0</strong> de <strong id="total-fossils">0</strong> ejemplares
+            </div>
+
+            <!-- Clear Filters Button -->
+            <button class="clear-filters-btn" id="clear-filters-btn" style="display: none;">
+                Limpiar filtros
+            </button>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Loading State -->
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Cargando colección...</p>
+            </div>
+
+            <!-- Error State -->
+            <div class="error-message" id="error-message" style="display: none;">
+                <p>⚠️ Error al cargar la colección. Por favor, recarga la página.</p>
+            </div>
+
+            <!-- Fossil Grid -->
+            <div class="fossil-grid" id="fossil-grid">
+                <!-- Cards will be dynamically generated here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Fullscreen Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-backdrop" id="modal-backdrop"></div>
+        <div class="modal-content">
+            <!-- Close Button -->
+            <button class="modal-close" id="modal-close" aria-label="Cerrar">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+
+            <!-- Image Container -->
+            <div class="image-container" id="image-container">
+                <img src="" alt="" id="modal-image" class="modal-image">
+            </div>
+
+            <!-- Image Navigation -->
+            <div class="image-navigation" id="image-navigation" style="display: none;">
+                <button class="nav-button prev" id="prev-image" aria-label="Imagen anterior">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                <span class="image-counter" id="image-counter">1 / 1</span>
+                <button class="nav-button next" id="next-image" aria-label="Siguiente imagen">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Fossil Info -->
+            <div class="modal-info">
+                <h2 class="modal-title" id="modal-title"></h2>
+                <div class="modal-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Periodo:</span>
+                        <span class="detail-badge" id="modal-periodo"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Época:</span>
+                        <span class="detail-badge" id="modal-era"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">País:</span>
+                        <span class="detail-badge" id="modal-ubicacion"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Dimensiones:</span>
+                        <span class="detail-value" id="modal-dimensiones"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Peso:</span>
+                        <span class="detail-value" id="modal-peso"></span>
+                    </div>
+                </div>
+                <p class="modal-description" id="modal-description"></p>
+            </div>
+
+            <!-- Zoom Controls -->
+            <div class="zoom-controls">
+                <button class="zoom-button" id="zoom-in" aria-label="Acercar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="11" y1="8" x2="11" y2="14"></line>
+                        <line x1="8" y1="11" x2="14" y2="11"></line>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+                <span class="zoom-level" id="zoom-level">100%</span>
+                <button class="zoom-button" id="zoom-out" aria-label="Alejar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="8" y1="11" x2="14" y2="11"></line>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+                <button class="zoom-button" id="zoom-reset" aria-label="Restablecer zoom">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 4v6h6"></path>
+                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exhibition Mode -->
+    <div class="exhibition-mode" id="exhibition-mode" style="display: none;">
+        <button class="exhibition-close" id="exhibition-close" aria-label="Salir del modo exposición">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+
+        <div class="exhibition-content">
+            <div class="exhibition-image-container">
+                <img src="" alt="" id="exhibition-image" class="exhibition-image">
+            </div>
+
+            <div class="exhibition-info">
+                <div class="exhibition-badge" id="exhibition-badge"></div>
+                <h2 class="exhibition-title" id="exhibition-title"></h2>
+                <p class="exhibition-species" id="exhibition-species"></p>
+                <div class="exhibition-details">
+                    <span class="exhibition-detail" id="exhibition-periodo"></span>
+                    <span class="exhibition-detail" id="exhibition-epoca"></span>
+                    <span class="exhibition-detail" id="exhibition-pais"></span>
+                </div>
+                <p class="exhibition-description" id="exhibition-description"></p>
+            </div>
+        </div>
+
+        <div class="exhibition-navigation">
+            <button class="exhibition-nav-btn" id="exhibition-prev" aria-label="Anterior">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            <span class="exhibition-counter" id="exhibition-counter">1 / 22</span>
+            <button class="exhibition-nav-btn" id="exhibition-next" aria-label="Siguiente">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; <span id="current-year"></span> Pascual Rizo - Colección de Fósiles</p>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(reg => console.log('Service Worker registrado', reg))
+                    .catch(err => console.log('Error al registrar Service Worker', err));
+            });
+        }
+    </script>
+</body>
+
+</html>
