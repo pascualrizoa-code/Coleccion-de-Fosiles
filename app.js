@@ -44,6 +44,7 @@ const elements = {
     modalUbicacion: document.getElementById('modal-ubicacion'),
     modalDimensiones: document.getElementById('modal-dimensiones'),
     modalPeso: document.getElementById('modal-peso'),
+    modalGenero: document.getElementById('modal-genero'),
     modalDescription: document.getElementById('modal-description'),
     imageContainer: document.getElementById('image-container'),
     imageNavigation: document.getElementById('image-navigation'),
@@ -266,7 +267,7 @@ function handleSearch(query) {
     } else {
         filteredData = fossilData.filter(fossil => {
             return fossil.Denominación.toLowerCase().includes(query) ||
-                fossil.Especie.toLowerCase().includes(query) ||
+                (fossil.Género && fossil.Género.toLowerCase().includes(query)) ||
                 fossil.Periodo.toLowerCase().includes(query) ||
                 fossil.País.toLowerCase().includes(query) ||
                 fossil['Nº Inventario'].toLowerCase().includes(query) ||
@@ -344,7 +345,7 @@ function createFossilCard(fossil, index) {
 
     const species = document.createElement('p');
     species.className = 'card-species';
-    species.textContent = fossil.Especie;
+    species.textContent = fossil.Género || '';
 
     const details = document.createElement('div');
     details.className = 'card-details';
@@ -405,6 +406,7 @@ function updateModalContent() {
     elements.modalUbicacion.textContent = currentFossil.País;
     elements.modalDimensiones.textContent = currentFossil.Dimensiones || 'No especificado';
     elements.modalPeso.textContent = currentFossil.Peso || 'No especificado';
+    elements.modalGenero.textContent = currentFossil.Género || 'No especificado';
     elements.modalDescription.textContent = currentFossil.Notas || 'Sin descripción disponible.';
 
     updateModalImage();
@@ -616,7 +618,7 @@ function updateExhibitionContent() {
 
     elements.exhibitionBadge.textContent = fossil['Nº Inventario'];
     elements.exhibitionTitle.textContent = fossil.Denominación;
-    elements.exhibitionSpecies.textContent = fossil.Especie;
+    elements.exhibitionSpecies.textContent = fossil.Género || '';
     elements.exhibitionPeriodo.textContent = fossil.Periodo;
     elements.exhibitionEpoca.textContent = fossil.Epoca || '';
     elements.exhibitionPais.textContent = fossil.País;
