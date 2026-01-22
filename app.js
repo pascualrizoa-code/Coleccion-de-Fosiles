@@ -139,7 +139,7 @@ function updateStats() {
     elements.totalCount.textContent = fossilData.length;
 
     // Count unique periods
-    const uniquePeriods = new Set(fossilData.map(f => f.Periodo));
+    const uniquePeriods = new Set(fossilData.map(f => f.Epoca));
     elements.eraCount.textContent = uniquePeriods.size;
 }
 
@@ -148,7 +148,7 @@ function updateStats() {
 // ===================================
 function initializeFilters() {
     // Get unique values for each filter
-    const periodos = [...new Set(fossilData.map(f => f.Periodo))].sort();
+    const periodos = [...new Set(fossilData.map(f => f.Epoca))].filter(Boolean).sort();
     const tipos = [...new Set(fossilData.map(f => f.Denominación))].sort();
     const paises = [...new Set(fossilData.map(f => f.País))].sort();
 
@@ -199,8 +199,8 @@ function handleFilterChange(filterType, value, checked) {
 
 function applyFilters() {
     filteredData = fossilData.filter(fossil => {
-        // Check periodo filter
-        if (activeFilters.periodo.length > 0 && !activeFilters.periodo.includes(fossil.Periodo)) {
+        // Check periodo filter (now using Epoca)
+        if (activeFilters.periodo.length > 0 && !activeFilters.periodo.includes(fossil.Epoca)) {
             return false;
         }
 
@@ -268,7 +268,7 @@ function handleSearch(query) {
         filteredData = fossilData.filter(fossil => {
             return fossil.Denominación.toLowerCase().includes(query) ||
                 (fossil.Género && fossil.Género.toLowerCase().includes(query)) ||
-                fossil.Periodo.toLowerCase().includes(query) ||
+                (fossil.Epoca && fossil.Epoca.toLowerCase().includes(query)) ||
                 fossil.País.toLowerCase().includes(query) ||
                 fossil['Nº Inventario'].toLowerCase().includes(query) ||
                 (fossil.Notas && fossil.Notas.toLowerCase().includes(query));
@@ -278,7 +278,7 @@ function handleSearch(query) {
     // Apply active filters on top of search
     if (activeFilters.periodo.length > 0 || activeFilters.tipo.length > 0 || activeFilters.pais.length > 0) {
         filteredData = filteredData.filter(fossil => {
-            if (activeFilters.periodo.length > 0 && !activeFilters.periodo.includes(fossil.Periodo)) {
+            if (activeFilters.periodo.length > 0 && !activeFilters.periodo.includes(fossil.Epoca)) {
                 return false;
             }
             if (activeFilters.tipo.length > 0 && !activeFilters.tipo.includes(fossil.Denominación)) {
@@ -352,7 +352,7 @@ function createFossilCard(fossil, index) {
 
     const periodo = document.createElement('span');
     periodo.className = 'card-detail';
-    periodo.textContent = fossil.Periodo;
+    periodo.textContent = fossil.Epoca || fossil.Periodo;
 
     const datacion = document.createElement('span');
     datacion.className = 'card-detail card-datacion';
