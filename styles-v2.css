@@ -7,20 +7,25 @@
    VARIABLES Y RESET
    ============================================ */
 :root {
-    /* Color Palette */
+    /* Color Palette - Galería Nocturna */
     --primary-dark: #1a2f1a;
-    --primary-darker: #0a1f0a;
+    --primary-darker: #050a05;
     --accent-gold: #d4af37;
     --accent-gold-light: #e8c766;
-    --bg-cream: #faf9f6;
-    --bg-white: #ffffff;
-    --text-dark: #2c2c2c;
-    --text-medium: #5a5a5a;
-    --text-light: #8a8a8a;
-    --border-light: #e0e0e0;
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
-    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+    --bg-dark: #121212;
+    /* Galería Nocturna Base */
+    --bg-card: #1e1e1e;
+    --bg-sidebar: #1a1a1a;
+    --text-white: #ffffff;
+    --text-silver: #e0e0e0;
+    --text-gold: #e8c766;
+    --text-muted: #aaaaaa;
+    --border-dark: #333333;
+    --border-gold: rgba(212, 175, 55, 0.3);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.6);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.8);
+    --shadow-gold: 0 0 15px rgba(212, 175, 55, 0.2);
 
     /* Typography */
     --font-serif: 'Playfair Display', serif;
@@ -52,8 +57,8 @@ html {
 
 body {
     font-family: var(--font-sans);
-    background-color: var(--bg-cream);
-    color: var(--text-dark);
+    background-color: var(--bg-dark);
+    color: var(--text-silver);
     line-height: 1.6;
     overflow-x: hidden;
 }
@@ -255,19 +260,20 @@ body {
    ============================================ */
 .sidebar {
     width: 200px;
-    background: var(--bg-white);
+    background: var(--bg-sidebar);
     border-radius: 12px;
     padding: var(--spacing-sm) var(--spacing-xs);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-md);
     position: sticky;
     top: 20px;
     flex-shrink: 0;
+    border: 1px solid var(--border-dark);
 }
 
 .sidebar-title {
     font-family: var(--font-serif);
     font-size: 1.2rem;
-    color: var(--primary-dark);
+    color: var(--text-gold);
     margin-bottom: var(--spacing-sm);
     padding: 0 var(--spacing-xs) var(--spacing-xs);
     border-bottom: 2px solid var(--accent-gold);
@@ -289,7 +295,7 @@ body {
     font-family: var(--font-sans);
     font-size: 0.85rem;
     font-weight: 600;
-    color: var(--text-dark);
+    color: var(--text-white);
     transition: color var(--transition-fast);
 }
 
@@ -337,18 +343,18 @@ body {
 .filter-option label {
     cursor: pointer;
     font-size: 0.8rem;
-    color: var(--text-medium);
+    color: var(--text-silver);
     flex: 1;
 }
 
 .filter-count {
     margin-top: var(--spacing-sm);
     padding: var(--spacing-xs);
-    background: rgba(212, 175, 55, 0.1);
+    background: rgba(212, 175, 55, 0.15);
     border-radius: 6px;
     text-align: center;
     font-size: 0.75rem;
-    color: var(--text-dark);
+    color: var(--text-silver);
 }
 
 .filter-count strong {
@@ -444,18 +450,20 @@ body {
    FOSSIL CARDS
    ============================================ */
 .fossil-card {
-    background: var(--bg-white);
+    background: var(--bg-card);
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-md);
     cursor: pointer;
     transition: all var(--transition-normal);
     position: relative;
+    border: 1px solid var(--border-dark);
 }
 
 .fossil-card:hover {
     transform: translateY(-8px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-gold);
+    border-color: var(--accent-gold);
 }
 
 .card-image-container {
@@ -504,7 +512,7 @@ body {
     font-family: var(--font-serif);
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--primary-dark);
+    color: var(--text-gold);
     margin-bottom: var(--spacing-xs);
 }
 
@@ -524,10 +532,11 @@ body {
 
 .card-detail {
     font-size: 0.8rem;
-    color: var(--text-light);
+    color: var(--text-silver);
     padding: 0.25rem 0.6rem;
-    background: var(--bg-cream);
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 4px;
+    border: 1px solid var(--border-dark);
 }
 
 .card-datacion {
@@ -578,25 +587,24 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(15px);
 }
 
 .modal-content {
     position: relative;
     width: 95%;
     max-width: 1400px;
-    /* Slightly wider for side-by-side */
     height: 90vh;
     margin: auto;
     display: flex;
     flex-direction: row;
-    /* Horizontal on desktop */
-    background: var(--bg-white);
+    background: var(--bg-card);
     border-radius: 16px;
     overflow: hidden;
     box-shadow: var(--shadow-lg);
     z-index: 1001;
+    border: 1px solid var(--border-dark);
 }
 
 .modal-close {
@@ -700,27 +708,23 @@ body {
 .modal-info {
     flex: 1;
     width: 35%;
-    /* 35% width on desktop */
     height: 100%;
-    /* Full height to allow scrolling info */
     overflow-y: auto;
-    background: var(--bg-white);
+    background: var(--bg-card);
     padding: var(--spacing-xl) var(--spacing-lg);
     z-index: 5;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    /* Left aligned for vertical reading */
     order: 2;
-    /* Explicitly second */
-    border-left: 1px solid var(--border-light);
+    border-left: 1px solid var(--border-dark);
 }
 
 .modal-title {
     font-family: var(--font-serif);
     font-size: 2rem;
     font-weight: 700;
-    color: var(--primary-dark);
+    color: var(--text-gold);
     margin-bottom: var(--spacing-lg);
     text-align: left;
     letter-spacing: -0.01em;
@@ -730,8 +734,7 @@ body {
 .modal-details {
     display: grid;
     grid-template-columns: 1fr;
-    /* Single column for side panel */
-    gap: var(--spacing-sm);
+    gap: 0.75rem;
     width: 100%;
     margin-bottom: var(--spacing-lg);
 }
@@ -743,26 +746,32 @@ body {
     justify-content: flex-start;
     gap: var(--spacing-sm);
     padding: var(--spacing-xs) var(--spacing-sm);
-    background: var(--bg-cream);
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
     border-left: 3px solid var(--accent-gold);
+    border-right: 1px solid var(--border-dark);
+    border-top: 1px solid var(--border-dark);
+    border-bottom: 1px solid var(--border-dark);
 }
 
 .detail-label {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    color: var(--text-dark);
-    min-width: 110px;
+    color: var(--text-gold);
+    min-width: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     flex-shrink: 0;
 }
 
 .detail-badge {
     padding: 0.4rem 0.8rem;
-    background: rgba(212, 175, 55, 0.15);
-    color: var(--primary-dark);
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--accent-gold-light);
     border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1px solid rgba(212, 175, 55, 0.3);
 }
 
 .detail-value {
@@ -774,10 +783,10 @@ body {
 .modal-description {
     font-size: 1rem;
     line-height: 1.8;
-    color: var(--text-medium);
+    color: var(--text-silver);
     margin-top: var(--spacing-sm);
     padding-top: var(--spacing-md);
-    border-top: 1px solid var(--border-light);
+    border-top: 1px solid var(--border-dark);
     width: 100%;
     max-width: 800px;
     text-align: justify;
@@ -929,8 +938,10 @@ body {
 }
 
 .exhibition-detail {
-    padding: 0.4rem 0.8rem;
-    background: rgba(255, 255, 255, 0.1);
+    padding: 0.4rem 1rem;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    color: var(--text-silver);
     border-radius: 20px;
     font-size: 0.85rem;
 }

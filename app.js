@@ -72,6 +72,8 @@ const elements = {
     exhibitionPeriodo: document.getElementById('exhibition-periodo'),
     exhibitionEpoca: document.getElementById('exhibition-epoca'),
     exhibitionPais: document.getElementById('exhibition-pais'),
+    exhibitionClase: document.getElementById('exhibition-clase'),
+    exhibitionOrden: document.getElementById('exhibition-orden'),
     exhibitionDescription: document.getElementById('exhibition-description'),
     exhibitionPrev: document.getElementById('exhibition-prev'),
     exhibitionNext: document.getElementById('exhibition-next'),
@@ -404,9 +406,9 @@ function updateModalContent() {
     elements.modalPeriodo.textContent = currentFossil.Periodo;
     elements.modalEra.textContent = currentFossil.Epoca || '';
     elements.modalUbicacion.textContent = currentFossil.País;
+    elements.modalGenero.textContent = currentFossil.Género || 'No especificado';
     elements.modalDimensiones.textContent = currentFossil.Dimensiones || 'No especificado';
     elements.modalPeso.textContent = currentFossil.Peso || 'No especificado';
-    elements.modalGenero.textContent = currentFossil.Género || 'No especificado';
     elements.modalDescription.textContent = currentFossil.Notas || 'Sin descripción disponible.';
 
     updateModalImage();
@@ -622,6 +624,8 @@ function updateExhibitionContent() {
     elements.exhibitionPeriodo.textContent = fossil.Periodo;
     elements.exhibitionEpoca.textContent = fossil.Epoca || '';
     elements.exhibitionPais.textContent = fossil.País;
+    elements.exhibitionClase.textContent = fossil.Clase || '';
+    elements.exhibitionOrden.textContent = fossil.Orden || '';
     elements.exhibitionDescription.textContent = fossil.Notas || 'Sin descripción disponible.';
 
     elements.exhibitionCounter.textContent = `${exhibitionIndex + 1} / ${filteredData.length}`;
