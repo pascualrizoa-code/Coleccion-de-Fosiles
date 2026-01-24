@@ -304,7 +304,7 @@
     "Género": "Quenstedtoceras sp.",
     "Periodo": "Jurásico",
     "Epoca": "Jurásico superior",
-    "Datación Relativa": "160 - 165 millones de años",
+    "Datación Relativa": "163 - 166 millones de años",
     "Procedencia Probable": "Cuenca del Volga (probable)",
     "País": "Rusia",
     "Dimensiones": "6,8 × 7 cm",
@@ -313,7 +313,7 @@
     "Clase": "Cephalopoda",
     "Subclase": "Ammonoidea",
     "Orden": "Ammonitida",
-    "Notas": "Conjunto fósil formado por dos ammonites asociados, parcialmente superpuestos, conservados en una matriz compacta. Las conchas presentan enrollamiento planiespiral evoluto, con ombligo amplio y costulación radial fina y regular, rasgos característicos del género Quenstedtoceras. La superficie muestra una piritización parcial a generalizada, visible como áreas de brillo metálico dorado y tonos iridiscentes, especialmente en la matriz y en sectores de la concha. Este tipo de preservación indica enterramiento rápido en condiciones pobres en oxígeno, favoreciendo la sustitución mineral de los tejidos carbonatados. La coexistencia de dos individuos sugiere un evento de acumulación rápida, posiblemente ligado a mortalidad masiva o a corrientes de fondo suaves.",
+    "Notas": "Conjunto fósil formado por dos ammonites asociados, parcialmente superpuestos, conservados en una matriz compacta. Las conchas presentan enrollamiento planiespiral evoluto, con ombligo amplio y costulación radial fina y regular, rasgos característicos del género Dactylioceras. La superficie muestra una piritización parcial a generalizada, visible como áreas de brillo metálico dorado y tonos iridiscentes, especialmente en la matriz y en sectores de la concha. Este tipo de preservación indica enterramiento rápido en condiciones pobres en oxígeno, favoreciendo la sustitución mineral de los tejidos carbonatados. La coexistencia de dos individuos sugiere un evento de acumulación rápida, posiblemente ligado a mortalidad masiva o a corrientes de fondo suaves.",
     "Integridad": "Ejemplar completo",
     "Conservación": "Bueno",
     "Restauraciones": "No observadas",
@@ -336,7 +336,7 @@
     "Clase": "Cephalopoda",
     "Subclase": "Ammonoidea",
     "Orden": "Ammonitida",
-    "Notas": "Ammonite de tamaño medio con concha planiespiral evoluta y ombligo amplio. Presenta costulación radial fuerte y bifurcada. Conservado en matriz calcárea, con ligera alteración ferruginosa superficial. Este grupo de ammonites fue abundante en mares poco profundos del Cretácico superior y constituye un importante fósil guía para este intervalo.",
+    "Notas": "Ammonite de tamaño medio con concha planiespiral evoluta y ombligo amplio. Presenta costulación radial fuerte y bifurcada. Conservado en matriz calcárea, con ligera alteración ferruginosa superficial. Este grupo de ammonites fue abundante en mares poco profundos del Jurásico medio y constituye un importante fósil guía para este intervalo.",
     "Integridad": "Ejemplar completo",
     "Conservación": "Bueno",
     "Restauraciones": "No observadas",
@@ -465,7 +465,7 @@
     "Género": "Rhacolepis",
     "Periodo": "Cretácico",
     "Epoca": "Cretácico inferior",
-    "Datación Relativa": "100 - 113 millones de años",
+    "Datación Relativa": "100-120 millones de años",
     "Procedencia Probable": "Cuenca de Araripe",
     "País": "Brasil",
     "Dimensiones": "4,7x10,7 cm",
@@ -503,6 +503,31 @@
     "Restauraciones": "No observadas",
     "imagenes": [
       "1.jpg"
+    ]
+  },
+  {
+    "Nº Inventario": "F-023",
+    "Denominación": "Molusco Bivalvo",
+    "Género": "Lopha sp.",
+    "Periodo": "Cretácico",
+    "Epoca": "Cretácico inferior",
+    "Datación Relativa": "100-120 millones de años",
+    "Procedencia Probable": "Marruecos (Probable región del Atlas/Erfoud)",
+    "País": "Marruecos",
+    "Dimensiones": "7,3x8,1 cm",
+    "Peso": "226 gr",
+    "Filogenesis": "Mollusca",
+    "Clase": "Bivalvia",
+    "Subclase": "",
+    "Orden": "Ostreida",
+    "Notas": "Molusco bivalvo inequivalve caracterizado por una fuerte ornamentación de costillas radiales ramificadas. Presenta una comisura marginal en zigzag (forma de \"cresta de gallo\") altamente pronunciada. Pieza de excepcional interés por su silicificación. El material biogénico original ha sido sustituido por sílice (calcedonia/microcuarzo), visible en el interior de las valvas por su textura vítrea y fractura concoidea. La matriz residual externa presenta tonalidades ocre típicas de sedimentos calcáreos meteorizados en climas áridos.",
+    "Integridad": "Ejemplar casi completo",
+    "Conservación": "Bueno",
+    "Restauraciones": "No observadas",
+    "imagenes": [
+      "1.jpg",
+      "2.jpg",
+      "3.jpg"
     ]
   }
 ]
