@@ -57,10 +57,67 @@ html {
 
 body {
     font-family: var(--font-sans);
-    background-color: var(--bg-dark);
+    background-color: transparent;
+    /* Changed from var(--bg-dark) */
     color: var(--text-silver);
     line-height: 1.6;
     overflow-x: hidden;
+    position: relative;
+}
+
+/* ============================================
+   MOVING BORDER BACKGROUND
+   ============================================ */
+.bg-moving-border {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+    background-color: var(--bg-dark);
+    /* Base dark color moved here */
+}
+
+.bg-moving-border::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg,
+            transparent 0%,
+            rgba(212, 175, 55, 0.2) 5%,
+            rgba(212, 175, 55, 0.4) 10%,
+            rgba(212, 175, 55, 0.2) 15%,
+            transparent 20%,
+            transparent 100%);
+    animation: rotate-border 8s linear infinite;
+    /* Faster and brighter */
+}
+
+@keyframes rotate-border {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.bg-moving-border::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    /* Slightly thicker border edge */
+    background: radial-gradient(circle at center, rgba(18, 18, 18, 0.85) 40%, var(--bg-dark) 100%);
+    backdrop-filter: blur(10px);
+    /* Add some glassmorphism feel */
+    z-index: 1;
 }
 
 /* ============================================
@@ -184,26 +241,61 @@ body {
 }
 
 .exhibition-btn {
-    background: rgba(212, 175, 55, 0.2);
-    border: 1px solid var(--accent-gold);
+    background: transparent;
+    border: none;
     color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
+    padding: 0;
+    border-radius: 8px;
     font-family: var(--font-sans);
     font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 0.4rem;
     transition: all var(--transition-normal);
-    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
 }
 
 .exhibition-btn:hover {
-    background: rgba(212, 175, 55, 0.3);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+/* ============================================
+   CTA MOVING BORDER
+   ============================================ */
+.cta-moving-border::before {
+    content: '';
+    position: absolute;
+    top: -150%;
+    left: -150%;
+    width: 400%;
+    height: 400%;
+    background: conic-gradient(from 0deg,
+            transparent 0%,
+            rgba(212, 175, 55, 0.4) 5%,
+            rgba(212, 175, 55, 1) 10%,
+            rgba(212, 175, 55, 0.4) 15%,
+            transparent 20%,
+            transparent 100%);
+    animation: rotate-border 4s linear infinite;
+    z-index: 0;
+}
+
+.cta-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1.2rem;
+    background: rgba(26, 47, 26, 0.9);
+    border-radius: 7px;
+    margin: 1px;
+    width: calc(100% - 2px);
+    height: calc(100% - 2px);
+    backdrop-filter: blur(10px);
 }
 
 .search-container {
