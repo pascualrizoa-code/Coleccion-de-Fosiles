@@ -265,6 +265,79 @@
                 </button>
             </div>
         </div>
+
+        <!-- Zoom Hint -->
+        <div class="zoom-hint" id="zoom-hint">
+            <div class="hint-content">
+                <svg class="hint-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="11" y1="8" x2="11" y2="14"></line>
+                    <line x1="8" y1="11" x2="14" y2="11"></line>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <span class="hint-text">Rueda del ratón o pellizca para zoom • Doble-click para zoom rápido</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Inspection Mode -->
+    <div class="fullscreen-inspection" id="fullscreen-inspection">
+        <div class="fullscreen-backdrop"></div>
+
+        <!-- Close Button -->
+        <button class="fullscreen-close" id="fullscreen-close" aria-label="Cerrar vista fullscreen">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+
+        <!-- Zoom Controls -->
+        <div class="fullscreen-zoom-controls">
+            <button class="zoom-button" id="fullscreen-zoom-in" aria-label="Aumentar zoom">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="11" y1="8" x2="11" y2="14"></line>
+                    <line x1="8" y1="11" x2="14" y2="11"></line>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </button>
+            <div class="zoom-level" id="fullscreen-zoom-level">100%</div>
+            <button class="zoom-button" id="fullscreen-zoom-out" aria-label="Reducir zoom">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="8" y1="11" x2="14" y2="11"></line>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </button>
+            <button class="zoom-button" id="fullscreen-zoom-reset" aria-label="Resetear zoom">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 4v6h6"></path>
+                    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Image Container -->
+        <div class="fullscreen-image-container" id="fullscreen-image-container">
+            <img src="" alt="" class="fullscreen-image" id="fullscreen-image">
+        </div>
+
+        <!-- Zoom Hint -->
+        <div class="fullscreen-zoom-hint" id="fullscreen-zoom-hint">
+            <div class="hint-content">
+                <svg class="hint-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="11" y1="8" x2="11" y2="14"></line>
+                    <line x1="8" y1="11" x2="14" y2="11"></line>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <span class="hint-text">Rueda del ratón o pellizca para zoom • Doble-click para zoom rápido • ESC para
+                    salir</span>
+            </div>
+        </div>
     </div>
 
     <!-- Exhibition Mode -->
@@ -323,6 +396,8 @@
     </footer>
 
     <script src="app.js"></script>
+    <!-- Service Worker desactivado temporalmente para desarrollo -->
+    <!--
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -332,6 +407,7 @@
             });
         }
     </script>
+    -->
 </body>
 
 </html>

@@ -15,6 +15,20 @@ let translateY = 0;
 // Touch gesture state
 let initialPinchDistance = 0;
 let initialZoomLevel = 1;
+let lastTapTime = 0;
+let isAnimatingZoom = false;
+
+// Fullscreen inspection state
+let fullscreenZoomLevel = 1;
+let fullscreenIsDragging = false;
+let fullscreenTranslateX = 0;
+let fullscreenTranslateY = 0;
+let fullscreenStartX = 0;
+let fullscreenStartY = 0;
+let fullscreenIsAnimatingZoom = false;
+let fullscreenInitialPinchDistance = 0;
+let fullscreenInitialZoomLevel = 1;
+let fullscreenLastTapTime = 0;
 
 // Exhibition mode state
 let exhibitionMode = false;
@@ -78,6 +92,16 @@ const elements = {
     exhibitionPrev: document.getElementById('exhibition-prev'),
     exhibitionNext: document.getElementById('exhibition-next'),
     exhibitionCounter: document.getElementById('exhibition-counter'),
+
+    // Fullscreen inspection elements
+    fullscreenInspection: document.getElementById('fullscreen-inspection'),
+    fullscreenClose: document.getElementById('fullscreen-close'),
+    fullscreenImage: document.getElementById('fullscreen-image'),
+    fullscreenImageContainer: document.getElementById('fullscreen-image-container'),
+    fullscreenZoomIn: document.getElementById('fullscreen-zoom-in'),
+    fullscreenZoomOut: document.getElementById('fullscreen-zoom-out'),
+    fullscreenZoomReset: document.getElementById('fullscreen-zoom-reset'),
+    fullscreenZoomLevel: document.getElementById('fullscreen-zoom-level'),
 
     // Filter elements
     filterPeriodoHeader: document.getElementById('filter-periodo-header'),
@@ -460,23 +484,27 @@ function nextImage() {
 // ZOOM FUNCTIONALITY
 // ===================================
 function zoomIn() {
-    zoomLevel = Math.min(zoomLevel + 0.25, 5);
-    applyZoom();
+    const newZoom = Math.min(zoomLevel + 0.25, 8);
+    animateZoom(newZoom, 200);
 }
 
 function zoomOut() {
-    zoomLevel = Math.max(zoomLevel - 0.25, 1);
-    applyZoom();
+    const newZoom = Math.max(zoomLevel - 0.25, 1);
+    animateZoom(newZoom, 200);
 }
 
 function resetZoom() {
-    zoomLevel = 1;
     translateX = 0;
     translateY = 0;
-    applyZoom();
+    animateZoom(1, 300);
 }
 
 function applyZoom() {
+    // Constrain pan to image bounds
+    const limits = calculatePanLimits();
+    translateX = Math.max(limits.minX, Math.min(limits.maxX, translateX));
+    translateY = Math.max(limits.minY, Math.min(limits.maxY, translateY));
+
     const scaleTransform = `scale(${zoomLevel})`;
     const translateTransform = `translate(${translateX / zoomLevel}px, ${translateY / zoomLevel}px)`;
     elements.modalImage.style.transform = `${scaleTransform} ${translateTransform}`;
@@ -485,25 +513,131 @@ function applyZoom() {
     // Update cursor based on zoom level
     if (zoomLevel > 1) {
         elements.modalImage.style.cursor = isDragging ? 'grabbing' : 'grab';
+        elements.imageContainer.style.cursor = isDragging ? 'grabbing' : 'grab';
     } else {
-        elements.modalImage.style.cursor = 'default';
+        elements.modalImage.style.cursor = 'zoom-in';
+        elements.imageContainer.style.cursor = 'zoom-in';
     }
 }
 
-// Mouse wheel zoom
-function handleWheel(e) {
-    e.preventDefault();
+// Smooth zoom animation
+function animateZoom(targetZoom, duration = 200) {
+    if (isAnimatingZoom) return;
 
-    const delta = e.deltaY > 0 ? -0.1 : 0.1;
-    const newZoom = Math.max(1, Math.min(5, zoomLevel + delta));
+    isAnimatingZoom = true;
+    const startZoom = zoomLevel;
+    const startTime = performance.now();
 
-    if (newZoom !== zoomLevel) {
+    function animate(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+
+        // Ease out cubic
+        const easeProgress = 1 - Math.pow(1 - progress, 3);
+
+        zoomLevel = startZoom + (targetZoom - startZoom) * easeProgress;
+        applyZoom();
+
+        if (progress < 1) {
+            requestAnimationFrame(animate);
+        } else {
+            zoomLevel = targetZoom;
+            applyZoom();
+            isAnimatingZoom = false;
+        }
+    }
+
+    requestAnimationFrame(animate);
+}
+
+// Calculate pan limits based on zoom level
+function calculatePanLimits() {
+    if (zoomLevel <= 1) {
+        return { minX: 0, maxX: 0, minY: 0, maxY: 0 };
+    }
+
+    const container = elements.imageContainer;
+    const image = elements.modalImage;
+
+    const containerWidth = container.offsetWidth;
+    const containerHeight = container.offsetHeight;
+    const imageWidth = image.offsetWidth * zoomLevel;
+    const imageHeight = image.offsetHeight * zoomLevel;
+
+    const maxX = Math.max(0, (imageWidth - containerWidth) / 2);
+    const maxY = Math.max(0, (imageHeight - containerHeight) / 2);
+
+    return {
+        minX: -maxX,
+        maxX: maxX,
+        minY: -maxY,
+        maxY: maxY
+    };
+}
+
+// Zoom at specific point (cursor or touch)
+function zoomAtPoint(clientX, clientY, delta) {
+    if (isAnimatingZoom) return;
+
+    const container = elements.imageContainer;
+    const rect = container.getBoundingClientRect();
+
+    // Calculate point relative to container
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+
+    // Calculate point relative to image center
+    const offsetX = x - rect.width / 2;
+    const offsetY = y - rect.height / 2;
+
+    const oldZoom = zoomLevel;
+    const newZoom = Math.max(1, Math.min(8, zoomLevel + delta));
+
+    if (newZoom !== oldZoom) {
+        // Adjust pan to keep the point under cursor
+        const zoomRatio = newZoom / oldZoom;
+        translateX = (translateX - offsetX) * zoomRatio + offsetX;
+        translateY = (translateY - offsetY) * zoomRatio + offsetY;
+
         zoomLevel = newZoom;
         applyZoom();
     }
 }
 
-// Pinch to zoom
+// Mouse wheel zoom with cursor-centered zooming
+function handleWheel(e) {
+    e.preventDefault();
+
+    const delta = e.deltaY > 0 ? -0.15 : 0.15;
+    zoomAtPoint(e.clientX, e.clientY, delta);
+}
+
+// Double-click to zoom
+function handleDoubleClick(e) {
+    e.preventDefault();
+
+    if (zoomLevel > 1) {
+        // Reset zoom if already zoomed
+        resetZoom();
+    } else {
+        // Zoom to 2x at click point
+        const container = elements.imageContainer;
+        const rect = container.getBoundingClientRect();
+
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const offsetX = x - rect.width / 2;
+        const offsetY = y - rect.height / 2;
+
+        translateX = -offsetX;
+        translateY = -offsetY;
+
+        animateZoom(2, 300);
+    }
+}
+
+// Pinch to zoom with improved handling
 function handleTouchStart(e) {
     if (e.touches.length === 2) {
         // Pinch gesture
@@ -515,15 +649,47 @@ function handleTouchStart(e) {
             touch2.clientY - touch1.clientY
         );
         initialZoomLevel = zoomLevel;
-    } else if (e.touches.length === 1 && zoomLevel > 1) {
-        // Single touch drag
-        startDrag(e);
+    } else if (e.touches.length === 1) {
+        // Check for double-tap
+        const currentTime = Date.now();
+        const tapGap = currentTime - lastTapTime;
+
+        if (tapGap < 300 && tapGap > 0) {
+            // Double tap detected
+            e.preventDefault();
+            const touch = e.touches[0];
+
+            if (zoomLevel > 1) {
+                resetZoom();
+            } else {
+                const container = elements.imageContainer;
+                const rect = container.getBoundingClientRect();
+
+                const x = touch.clientX - rect.left;
+                const y = touch.clientY - rect.top;
+
+                const offsetX = x - rect.width / 2;
+                const offsetY = y - rect.height / 2;
+
+                translateX = -offsetX;
+                translateY = -offsetY;
+
+                animateZoom(2, 300);
+            }
+            lastTapTime = 0;
+        } else {
+            lastTapTime = currentTime;
+            // Single touch drag (if zoomed)
+            if (zoomLevel > 1) {
+                startDrag(e);
+            }
+        }
     }
 }
 
 function handleTouchMove(e) {
     if (e.touches.length === 2) {
-        // Pinch zoom
+        // Pinch zoom with center point
         e.preventDefault();
         const touch1 = e.touches[0];
         const touch2 = e.touches[1];
@@ -532,9 +698,32 @@ function handleTouchMove(e) {
             touch2.clientY - touch1.clientY
         );
 
+        // Calculate center point of pinch
+        const centerX = (touch1.clientX + touch2.clientX) / 2;
+        const centerY = (touch1.clientY + touch2.clientY) / 2;
+
         const scale = currentDistance / initialPinchDistance;
-        zoomLevel = Math.max(1, Math.min(5, initialZoomLevel * scale));
-        applyZoom();
+        const newZoom = Math.max(1, Math.min(8, initialZoomLevel * scale));
+
+        if (newZoom !== zoomLevel) {
+            const container = elements.imageContainer;
+            const rect = container.getBoundingClientRect();
+
+            const x = centerX - rect.left;
+            const y = centerY - rect.top;
+
+            const offsetX = x - rect.width / 2;
+            const offsetY = y - rect.height / 2;
+
+            const oldZoom = zoomLevel;
+            const zoomRatio = newZoom / oldZoom;
+
+            translateX = (translateX - offsetX) * zoomRatio + offsetX;
+            translateY = (translateY - offsetY) * zoomRatio + offsetY;
+
+            zoomLevel = newZoom;
+            applyZoom();
+        }
     } else if (e.touches.length === 1 && isDragging) {
         // Single touch drag
         drag(e);
@@ -589,6 +778,307 @@ function drag(e) {
 function endDrag() {
     isDragging = false;
     applyZoom();
+}
+
+// ===================================
+// FULLSCREEN INSPECTION MODE
+// ===================================
+function openFullscreenInspection() {
+    const currentImageSrc = elements.modalImage.src;
+    const currentImageAlt = elements.modalImage.alt;
+
+    elements.fullscreenImage.src = currentImageSrc;
+    elements.fullscreenImage.alt = currentImageAlt;
+
+    // Reset zoom state
+    fullscreenZoomLevel = 1;
+    fullscreenTranslateX = 0;
+    fullscreenTranslateY = 0;
+
+    elements.fullscreenInspection.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    applyFullscreenZoom();
+}
+
+function closeFullscreenInspection() {
+    elements.fullscreenInspection.classList.remove('active');
+    document.body.style.overflow = '';
+
+    // Reset zoom
+    fullscreenZoomLevel = 1;
+    fullscreenTranslateX = 0;
+    fullscreenTranslateY = 0;
+}
+
+// Fullscreen zoom functions
+function fullscreenZoomIn() {
+    const newZoom = Math.min(fullscreenZoomLevel + 0.25, 8);
+    animateFullscreenZoom(newZoom, 200);
+}
+
+function fullscreenZoomOut() {
+    const newZoom = Math.max(fullscreenZoomLevel - 0.25, 1);
+    animateFullscreenZoom(newZoom, 200);
+}
+
+function fullscreenResetZoom() {
+    fullscreenTranslateX = 0;
+    fullscreenTranslateY = 0;
+    animateFullscreenZoom(1, 300);
+}
+
+function applyFullscreenZoom() {
+    const limits = calculateFullscreenPanLimits();
+    fullscreenTranslateX = Math.max(limits.minX, Math.min(limits.maxX, fullscreenTranslateX));
+    fullscreenTranslateY = Math.max(limits.minY, Math.min(limits.maxY, fullscreenTranslateY));
+
+    const scaleTransform = `scale(${fullscreenZoomLevel})`;
+    const translateTransform = `translate(${fullscreenTranslateX / fullscreenZoomLevel}px, ${fullscreenTranslateY / fullscreenZoomLevel}px)`;
+    elements.fullscreenImage.style.transform = `${scaleTransform} ${translateTransform}`;
+    elements.fullscreenZoomLevel.textContent = `${Math.round(fullscreenZoomLevel * 100)}%`;
+
+    if (fullscreenZoomLevel > 1) {
+        elements.fullscreenImage.style.cursor = fullscreenIsDragging ? 'grabbing' : 'grab';
+        elements.fullscreenImageContainer.style.cursor = fullscreenIsDragging ? 'grabbing' : 'grab';
+    } else {
+        elements.fullscreenImage.style.cursor = 'zoom-in';
+        elements.fullscreenImageContainer.style.cursor = 'zoom-in';
+    }
+}
+
+function animateFullscreenZoom(targetZoom, duration = 200) {
+    if (fullscreenIsAnimatingZoom) return;
+
+    fullscreenIsAnimatingZoom = true;
+    const startZoom = fullscreenZoomLevel;
+    const startTime = performance.now();
+
+    function animate(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeProgress = 1 - Math.pow(1 - progress, 3);
+
+        fullscreenZoomLevel = startZoom + (targetZoom - startZoom) * easeProgress;
+        applyFullscreenZoom();
+
+        if (progress < 1) {
+            requestAnimationFrame(animate);
+        } else {
+            fullscreenZoomLevel = targetZoom;
+            applyFullscreenZoom();
+            fullscreenIsAnimatingZoom = false;
+        }
+    }
+
+    requestAnimationFrame(animate);
+}
+
+function calculateFullscreenPanLimits() {
+    if (fullscreenZoomLevel <= 1) {
+        return { minX: 0, maxX: 0, minY: 0, maxY: 0 };
+    }
+
+    const container = elements.fullscreenImageContainer;
+    const image = elements.fullscreenImage;
+
+    const containerWidth = container.offsetWidth;
+    const containerHeight = container.offsetHeight;
+    const imageWidth = image.offsetWidth * fullscreenZoomLevel;
+    const imageHeight = image.offsetHeight * fullscreenZoomLevel;
+
+    const maxX = Math.max(0, (imageWidth - containerWidth) / 2);
+    const maxY = Math.max(0, (imageHeight - containerHeight) / 2);
+
+    return {
+        minX: -maxX,
+        maxX: maxX,
+        minY: -maxY,
+        maxY: maxY
+    };
+}
+
+function fullscreenZoomAtPoint(clientX, clientY, delta) {
+    if (fullscreenIsAnimatingZoom) return;
+
+    const container = elements.fullscreenImageContainer;
+    const rect = container.getBoundingClientRect();
+
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+    const offsetX = x - rect.width / 2;
+    const offsetY = y - rect.height / 2;
+
+    const oldZoom = fullscreenZoomLevel;
+    const newZoom = Math.max(1, Math.min(8, fullscreenZoomLevel + delta));
+
+    if (newZoom !== oldZoom) {
+        const zoomRatio = newZoom / oldZoom;
+        fullscreenTranslateX = (fullscreenTranslateX - offsetX) * zoomRatio + offsetX;
+        fullscreenTranslateY = (fullscreenTranslateY - offsetY) * zoomRatio + offsetY;
+
+        fullscreenZoomLevel = newZoom;
+        applyFullscreenZoom();
+    }
+}
+
+function handleFullscreenWheel(e) {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.15 : 0.15;
+    fullscreenZoomAtPoint(e.clientX, e.clientY, delta);
+}
+
+function handleFullscreenDoubleClick(e) {
+    e.preventDefault();
+
+    if (fullscreenZoomLevel > 1) {
+        fullscreenResetZoom();
+    } else {
+        const container = elements.fullscreenImageContainer;
+        const rect = container.getBoundingClientRect();
+
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const offsetX = x - rect.width / 2;
+        const offsetY = y - rect.height / 2;
+
+        fullscreenTranslateX = -offsetX;
+        fullscreenTranslateY = -offsetY;
+
+        animateFullscreenZoom(2, 300);
+    }
+}
+
+// Fullscreen touch handlers
+function handleFullscreenTouchStart(e) {
+    if (e.touches.length === 2) {
+        e.preventDefault();
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+        fullscreenInitialPinchDistance = Math.hypot(
+            touch2.clientX - touch1.clientX,
+            touch2.clientY - touch1.clientY
+        );
+        fullscreenInitialZoomLevel = fullscreenZoomLevel;
+    } else if (e.touches.length === 1) {
+        const currentTime = Date.now();
+        const tapGap = currentTime - fullscreenLastTapTime;
+
+        if (tapGap < 300 && tapGap > 0) {
+            e.preventDefault();
+            const touch = e.touches[0];
+
+            if (fullscreenZoomLevel > 1) {
+                fullscreenResetZoom();
+            } else {
+                const container = elements.fullscreenImageContainer;
+                const rect = container.getBoundingClientRect();
+
+                const x = touch.clientX - rect.left;
+                const y = touch.clientY - rect.top;
+                const offsetX = x - rect.width / 2;
+                const offsetY = y - rect.height / 2;
+
+                fullscreenTranslateX = -offsetX;
+                fullscreenTranslateY = -offsetY;
+
+                animateFullscreenZoom(2, 300);
+            }
+            fullscreenLastTapTime = 0;
+        } else {
+            fullscreenLastTapTime = currentTime;
+            if (fullscreenZoomLevel > 1) {
+                startFullscreenDrag(e);
+            }
+        }
+    }
+}
+
+function handleFullscreenTouchMove(e) {
+    if (e.touches.length === 2) {
+        e.preventDefault();
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+        const currentDistance = Math.hypot(
+            touch2.clientX - touch1.clientX,
+            touch2.clientY - touch1.clientY
+        );
+
+        const centerX = (touch1.clientX + touch2.clientX) / 2;
+        const centerY = (touch1.clientY + touch2.clientY) / 2;
+
+        const scale = currentDistance / fullscreenInitialPinchDistance;
+        const newZoom = Math.max(1, Math.min(8, fullscreenInitialZoomLevel * scale));
+
+        if (newZoom !== fullscreenZoomLevel) {
+            const container = elements.fullscreenImageContainer;
+            const rect = container.getBoundingClientRect();
+
+            const x = centerX - rect.left;
+            const y = centerY - rect.top;
+            const offsetX = x - rect.width / 2;
+            const offsetY = y - rect.height / 2;
+
+            const oldZoom = fullscreenZoomLevel;
+            const zoomRatio = newZoom / oldZoom;
+
+            fullscreenTranslateX = (fullscreenTranslateX - offsetX) * zoomRatio + offsetX;
+            fullscreenTranslateY = (fullscreenTranslateY - offsetY) * zoomRatio + offsetY;
+
+            fullscreenZoomLevel = newZoom;
+            applyFullscreenZoom();
+        }
+    } else if (e.touches.length === 1 && fullscreenIsDragging) {
+        fullscreenDrag(e);
+    }
+}
+
+function handleFullscreenTouchEnd(e) {
+    if (e.touches.length < 2) {
+        fullscreenInitialPinchDistance = 0;
+    }
+    if (e.touches.length === 0) {
+        endFullscreenDrag();
+    }
+}
+
+// Fullscreen drag functions
+function startFullscreenDrag(e) {
+    if (fullscreenZoomLevel <= 1) return;
+
+    fullscreenIsDragging = true;
+
+    if (e.type === 'mousedown') {
+        e.preventDefault();
+        fullscreenStartX = e.clientX - fullscreenTranslateX;
+        fullscreenStartY = e.clientY - fullscreenTranslateY;
+    } else if (e.type === 'touchstart' && e.touches.length === 1) {
+        fullscreenStartX = e.touches[0].clientX - fullscreenTranslateX;
+        fullscreenStartY = e.touches[0].clientY - fullscreenTranslateY;
+    }
+
+    applyFullscreenZoom();
+}
+
+function fullscreenDrag(e) {
+    if (!fullscreenIsDragging || fullscreenZoomLevel <= 1) return;
+
+    e.preventDefault();
+
+    if (e.type === 'mousemove') {
+        fullscreenTranslateX = e.clientX - fullscreenStartX;
+        fullscreenTranslateY = e.clientY - fullscreenStartY;
+    } else if (e.type === 'touchmove' && e.touches.length === 1) {
+        fullscreenTranslateX = e.touches[0].clientX - fullscreenStartX;
+        fullscreenTranslateY = e.touches[0].clientY - fullscreenStartY;
+    }
+
+    applyFullscreenZoom();
+}
+
+function endFullscreenDrag() {
+    fullscreenIsDragging = false;
+    applyFullscreenZoom();
 }
 
 // ===================================
@@ -667,10 +1157,14 @@ function setupEventListeners() {
     // Mouse wheel zoom
     elements.imageContainer.addEventListener('wheel', handleWheel, { passive: false });
 
+    // Double-click to zoom
+    elements.imageContainer.addEventListener('dblclick', handleDoubleClick);
+
     // Touch gestures (pinch-to-zoom and drag)
     elements.imageContainer.addEventListener('touchstart', handleTouchStart, { passive: false });
     elements.imageContainer.addEventListener('touchmove', handleTouchMove, { passive: false });
     elements.imageContainer.addEventListener('touchend', handleTouchEnd, { passive: false });
+
 
     // Mouse drag functionality
     elements.modalImage.addEventListener('mousedown', startDrag);
@@ -687,6 +1181,31 @@ function setupEventListeners() {
     elements.exhibitionClose.addEventListener('click', exitExhibitionMode);
     elements.exhibitionPrev.addEventListener('click', previousExhibition);
     elements.exhibitionNext.addEventListener('click', nextExhibition);
+
+    // Fullscreen inspection mode
+    elements.modalImage.addEventListener('click', openFullscreenInspection);
+    elements.fullscreenClose.addEventListener('click', closeFullscreenInspection);
+
+    // Fullscreen zoom controls
+    elements.fullscreenZoomIn.addEventListener('click', fullscreenZoomIn);
+    elements.fullscreenZoomOut.addEventListener('click', fullscreenZoomOut);
+    elements.fullscreenZoomReset.addEventListener('click', fullscreenResetZoom);
+
+    // Fullscreen mouse wheel zoom
+    elements.fullscreenImageContainer.addEventListener('wheel', handleFullscreenWheel, { passive: false });
+
+    // Fullscreen double-click to zoom
+    elements.fullscreenImageContainer.addEventListener('dblclick', handleFullscreenDoubleClick);
+
+    // Fullscreen touch gestures
+    elements.fullscreenImageContainer.addEventListener('touchstart', handleFullscreenTouchStart, { passive: false });
+    elements.fullscreenImageContainer.addEventListener('touchmove', handleFullscreenTouchMove, { passive: false });
+    elements.fullscreenImageContainer.addEventListener('touchend', handleFullscreenTouchEnd, { passive: false });
+
+    // Fullscreen mouse drag
+    elements.fullscreenImage.addEventListener('mousedown', startFullscreenDrag);
+    document.addEventListener('mousemove', fullscreenDrag);
+    document.addEventListener('mouseup', endFullscreenDrag);
 
     // Filter toggles
     elements.filterPeriodoHeader.addEventListener('click', () => {
@@ -718,6 +1237,11 @@ function setupEventListeners() {
             if (e.key === 'Escape') exitExhibitionMode();
             if (e.key === 'ArrowLeft') previousExhibition();
             if (e.key === 'ArrowRight') nextExhibition();
+        }
+
+        // Fullscreen inspection navigation
+        if (elements.fullscreenInspection.classList.contains('active')) {
+            if (e.key === 'Escape') closeFullscreenInspection();
         }
     });
 }
