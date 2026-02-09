@@ -1,6 +1,7 @@
 /* ============================================
    COLECCIÓN DE FÓSILES - PASCUAL RIZO
    Diseño inspirado en la colección de minerales
+   Last Deployment Trigger: 2026-02-09
    ============================================ */
 
 /* ============================================
@@ -718,6 +719,8 @@ body {
     width: 100%;
     height: 100%;
     z-index: 1000;
+    overflow-y: auto;
+    /* Allow scrolling the whole modal if it exceeds window height */
 }
 
 .modal.active {
@@ -753,6 +756,8 @@ body {
     width: 95%;
     max-width: 1400px;
     height: 90vh;
+    margin: auto;
+    /* Robust centering across all browsers */
     display: flex;
     flex-direction: row;
     background: var(--bg-card);
@@ -1325,19 +1330,27 @@ body {
 
     /* Modal Mobile Adjustments */
     .modal.active {
-        padding: 0;
+        padding: 20px 0;
+        /* Add padding at top/bottom for mobile scroll */
+        align-items: flex-start;
+        /* Start from top if content is long */
     }
 
     .modal-content {
         width: 100%;
-        height: 100%;
+        height: auto;
+        /* Grow with content */
+        min-height: 100%;
         border-radius: 0;
         max-width: 100%;
-        max-height: 100%;
+        max-height: none;
+        /* Remove height limits */
         display: flex;
         flex-direction: column;
         /* Vertical stack on mobile */
-        overflow-y: auto;
+        overflow-y: visible;
+        /* Scroll is handled by .modal parent */
+        margin: 0;
     }
 
     .image-container {
@@ -1347,6 +1360,10 @@ body {
 
     .modal-info {
         width: 100% !important;
+        height: auto !important;
+        /* Grow with content */
+        overflow-y: visible !important;
+        /* No internal scroll */
         padding: var(--spacing-lg) var(--spacing-md);
         background: var(--bg-white);
         border-left: none;
