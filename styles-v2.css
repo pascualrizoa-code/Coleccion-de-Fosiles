@@ -724,9 +724,9 @@ body {
 }
 
 .modal.active {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    place-items: center;
+    padding: 2rem;
     animation: modalFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -741,7 +741,7 @@ body {
 }
 
 .modal-backdrop {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
