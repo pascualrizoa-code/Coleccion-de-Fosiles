@@ -755,9 +755,8 @@ body {
     position: relative;
     width: 95%;
     max-width: 1400px;
-    height: 90vh;
-    margin: auto;
-    /* Robust centering across all browsers */
+    height: auto;
+    max-height: 90vh;
     display: flex;
     flex-direction: row;
     background: var(--bg-card);
@@ -1330,27 +1329,22 @@ body {
 
     /* Modal Mobile Adjustments */
     .modal.active {
-        padding: 20px 0;
-        /* Add padding at top/bottom for mobile scroll */
-        align-items: flex-start;
-        /* Start from top if content is long */
+        padding: 2rem 1rem;
+        display: block;
+        /* Allow natural page flow on mobile */
     }
 
     .modal-content {
         width: 100%;
         height: auto;
-        /* Grow with content */
-        min-height: 100%;
-        border-radius: 0;
+        min-height: auto;
+        border-radius: 12px;
         max-width: 100%;
         max-height: none;
-        /* Remove height limits */
         display: flex;
         flex-direction: column;
-        /* Vertical stack on mobile */
-        overflow-y: visible;
-        /* Scroll is handled by .modal parent */
-        margin: 0;
+        overflow: visible;
+        margin: 0 auto;
     }
 
     .image-container {
@@ -1361,11 +1355,9 @@ body {
     .modal-info {
         width: 100% !important;
         height: auto !important;
-        /* Grow with content */
         overflow-y: visible !important;
-        /* No internal scroll */
         padding: var(--spacing-lg) var(--spacing-md);
-        background: var(--bg-white);
+        background: var(--bg-card);
         border-left: none;
         align-items: center;
         /* Center aligned for mobile stack */
