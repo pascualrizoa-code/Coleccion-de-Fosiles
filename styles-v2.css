@@ -1031,68 +1031,6 @@ body {
     }
 }
 
-/* Zoom Hint */
-.zoom-hint {
-    position: absolute;
-    bottom: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1005;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-
-.modal.active .zoom-hint {
-    animation: hintFadeInOut 6s ease forwards;
-}
-
-.hint-content {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    background: rgba(62, 39, 35, 0.95);
-    color: white;
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: 30px;
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-}
-
-.hint-icon {
-    color: var(--accent-gold-vibrant);
-    flex-shrink: 0;
-}
-
-.hint-text {
-    font-size: 0.85rem;
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-@keyframes hintFadeInOut {
-    0% {
-        opacity: 0;
-        transform: translateX(-50%) translateY(10px);
-    }
-
-    10% {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-    }
-
-    90% {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-    }
-
-    100% {
-        opacity: 0;
-        transform: translateX(-50%) translateY(-10px);
-    }
-}
-
 /* ============================================
    FULLSCREEN INSPECTION MODE
    ============================================ */
@@ -1202,21 +1140,6 @@ body {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-}
-
-.fullscreen-zoom-hint {
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2010;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-
-.fullscreen-inspection.active .fullscreen-zoom-hint {
-    animation: hintFadeInOut 6s ease forwards;
 }
 
 /* ============================================
