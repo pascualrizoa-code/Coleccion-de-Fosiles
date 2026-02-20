@@ -443,29 +443,10 @@ function updateModalImage() {
     if (!currentFossil) return;
 
     const imagePath = `imagenes/${currentFossil['Nº Inventario']}/${currentFossil.imagenes[currentImageIndex]}`;
-
-    // Reset inline size before loading new image
-    elements.modalImage.style.width = '';
-    elements.modalImage.style.height = '';
-
-    elements.modalImage.onload = function () {
-        const container = elements.imageContainer;
-        const cw = container.clientWidth;
-        const ch = container.clientHeight;
-        const nw = this.naturalWidth;
-        const nh = this.naturalHeight;
-
-        if (cw === 0 || ch === 0 || nw === 0 || nh === 0) return;
-
-        // Scale to fill the container as much as possible (contain logic)
-        const scale = Math.min(cw / nw, ch / nh);
-        this.style.width = Math.round(nw * scale) + 'px';
-        this.style.height = Math.round(nh * scale) + 'px';
-    };
-
     elements.modalImage.src = imagePath;
     elements.modalImage.alt = currentFossil.Denominación;
 }
+
 
 
 function updateImageNavigation() {
