@@ -955,16 +955,51 @@ body {
     font-weight: 400;
 }
 
-.modal-description {
-    font-size: 1rem;
-    line-height: 1.8;
-    color: var(--text-silver);
-    margin-top: var(--spacing-sm);
-    padding-top: var(--spacing-md);
-    border-top: 1px solid var(--border-dark);
+.modal-notes-section {
     width: 100%;
-    max-width: 800px;
+    margin-top: var(--spacing-sm);
+    border-top: 1px solid var(--border-dark);
+    padding-top: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    flex: 1;
+    min-height: 0;
+}
+
+.modal-notes-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+}
+
+.modal-description {
+    font-size: 0.93rem;
+    line-height: 1.75;
+    color: var(--text-silver);
+    width: 100%;
     text-align: justify;
+    overflow-y: auto;
+    max-height: 180px;
+    padding-right: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-gold) transparent;
+}
+
+.modal-description::-webkit-scrollbar {
+    width: 4px;
+}
+
+.modal-description::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.modal-description::-webkit-scrollbar-thumb {
+    background: var(--accent-gold);
+    border-radius: 4px;
 }
 
 .zoom-controls {
@@ -1363,6 +1398,10 @@ body {
         /* Center aligned for mobile stack */
     }
 
+    .modal-description {
+        max-height: 150px;
+    }
+
     .image-navigation {
         position: relative;
         bottom: auto;
@@ -1488,9 +1527,6 @@ body {
         grid-template-columns: 1fr;
     }
 
-    .modal-content {
-        /* Padding removed to fix content cutoff */
-    }
 
     .modal-info {
         padding: var(--spacing-md);
